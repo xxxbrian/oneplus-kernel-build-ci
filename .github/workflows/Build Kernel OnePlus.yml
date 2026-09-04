@@ -672,7 +672,11 @@ jobs:
           [[ -n "$KSU_CUSTOM_TAG" ]] && echo "自定义版本标识: $KSU_CUSTOM_TAG" || echo "自定义版本标识: 未启用"
           [[ -n "$MANUAL_HASH" ]] && echo "手动指定 hash: $MANUAL_HASH" || echo "手动指定 hash: 未启用"
 
-          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/${KSU_MANAGER_BRANCH}/kernel/setup.sh" | bash -s "$KSU_BUILTIN_BRANCH"
+          # TEMP: build KernelSU from xxxbrian/sukisu-ultra-patch (builtin setter fix)
+          KSU_REPO="xxxbrian/sukisu-ultra-patch"
+          curl -LSs "https://raw.githubusercontent.com/${KSU_REPO}/${KSU_MANAGER_BRANCH}/kernel/setup.sh" \
+            | sed "s|https://github.com/SukiSU-Ultra/SukiSU-Ultra|https://github.com/${KSU_REPO}|" \
+            | bash -s "$KSU_BUILTIN_BRANCH"
           cd ./KernelSU
 
           # 如果指定了手动 hash，就切换到该提交
