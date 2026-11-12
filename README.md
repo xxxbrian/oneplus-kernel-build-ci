@@ -82,8 +82,6 @@
 >
 >``OnePlus Ace5``不支持开启风驰,较老的机型即使内核加入也无法使用,不要勉强  
 >
->``CAll Build Start UP``是一个极其危险的新工作流文件,**它没有新功能且一切保持默认不可自定义**,新工作流**禁止**普通用户使用!普通用户请使用``Build All OnePlus Kernels``!  
->
  
 ------
  
@@ -95,6 +93,8 @@
 # 更新日志
 >小的更新内容将被忽略 更多内容请参看提交
  
+- 新增`SusfsCompat.kts`处理`susfs`兼容以及`SusfsContext.kts`自动处理`susfs`上下文期望异常  
+ 
 - 新增`FakeConfig(HideConfig)`，用于隐藏`proc/config.gz`内配置项可见性  
 ```
 普通配置项:
@@ -102,8 +102,6 @@ set_config "CONFIG_IP_NF_TARGET_ECN=y"
 隐藏配置项:
 set_hide_config "CONFIG_IP6_NF_NAT=y"
 ```  
- 
-- 新增`FakePatch`完善多内核等级与`susfs`的兼容问题  
  
 - 新增路径递推,完整适配内核版本`6.12+`的`Rust`构建逻辑和`bindgen`、`Kleaf`依赖搜索  
  
@@ -149,8 +147,6 @@ v3.1.7-自定义内容@builtin[f5541e21]
 - 全自动化获取内核信息及构建信息  
  
 - 允许修改内核等级`SUBLEVEL`,用于欺骗系统-解决系统更新后`SUBLEVEL`改变但内核源码没有更新导致的验证而无法开机的问题  
- 
-- 允许分批次每次`9`个运行多个工作流,普通用户禁止使用  
  
 - 删除`file-map`及编译方式并由主工作流自行选择[@Bouteillepleine](https://github.com/Bouteillepleine)  
  

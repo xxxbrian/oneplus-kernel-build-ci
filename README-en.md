@@ -82,8 +82,6 @@ Prohibit the promotion of forked repositories with **no modifications**; see [LI
 >
 >``OnePlus Ace5`` does not support enabling Fengchi. Older models cannot use it even if the kernel includes it — do not force it  
 >
->``CAll Build Start UP`` is an **extremely dangerous** new workflow.**It has no new features and everything remains default and non-customizable**.This workflow is **strictly prohibited** for regular users and should use ``Build All OnePlus Kernels`` instead!  
->
  
 ------
  
@@ -95,6 +93,8 @@ Prohibit the promotion of forked repositories with **no modifications**; see [LI
 # Changelog
 > Minor updates will be ignored. For more details, please refer to the commit.
  
+- Add `SusfsCompat.kts` to handle susfs compatibility issues and `SusfsContext.kts` to automatically handle `susfs` context mismatch exceptions.  
+ 
 - Added `FakeConfig(HideConfig)` to hide the visibility of config options in `proc/config.gz`.  
 ```
 Regular config option:
@@ -102,8 +102,6 @@ set_config "CONFIG_IP_NF_TARGET_ECN=y"
 Hidden config option:
 set_hide_config "CONFIG_IP6_NF_NAT=y"
 ```  
- 
-- Added `FakePatch` to improve compatibility between multiple kernel sublevel and `susfs`.  
  
 - Added path recursion, providing full support for `Rust` build logic and `bindgen`/`Kleaf` dependency resolution on kernel version `6.12+`.  
  
@@ -149,8 +147,6 @@ Regardless of whether the custom version identifier and fallback hash are enable
 - Fully automated retrieval of kernel information and build information.  
  
 - Allow modifying `SUBLEVEL`,Used to fix the issue where the device fails to boot after a system update changes the `SUBLEVEL` but the kernel source has not been updated.  
- 
-- Allows running multiple workflows in batches of `9` each time.Ordinary users are prohibited from using.  
  
 - Remove file-map and build method selection; let the main workflow decide automatically [@Bouteillepleine](https://github.com/Bouteillepleine)  
  
