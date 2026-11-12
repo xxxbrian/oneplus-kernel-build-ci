@@ -522,6 +522,35 @@ jobs:
             sed -i 's/if check_defconfig == None:/if False:  # check_defconfig == None:/' kernel_platform/build/kernel/kleaf/common_kernels.bzl
           fi
 
+      - name: Fix duplicate test_task_ux export (OnePlus sm8650 Android 16)
+        run: |
+          # 一加 sm8650_b_16.0.0_* 源码的 block/blk-mq.c 里带有
+          #   EXPORT_SYMBOL_GPL(test_task_ux);
+          # 而 vendor_boot 第一阶段的厂商模块 oplus_bsp_sched_assist.ko 自己也导出这个符号。
+          # 重复导出会让该模块加载失败，sched-walt.ko / oplus_bsp_schedinfo.ko /
+          # oplus_bsp_eas_opt.ko / oplus_bsp_qos_sched.ko 又会因 CRC 不符解析错误，
+          # 最终第一阶段 init 失败 -> 开机即崩 / 反复重启 / 进 Qualcomm crash dump。
+          # 参考: Numbersf/Action-Build#303, Numbersf/Action-Build#279,
+          #       OnePlusOSS/android_kernel_common_oneplus_sm8650#35 / #42
+          cd kernel_workspace/kernel_platform/common
+          if [ ! -f block/blk-mq.c ]; then
+            echo "block/blk-mq.c 不存在，跳过"
+            exit 0
+          fi
+          if grep -q '^EXPORT_SYMBOL_GPL(test_task_ux);' block/blk-mq.c; then
+            sed -i '/^EXPORT_SYMBOL_GPL(test_task_ux);/d' block/blk-mq.c
+            echo "已移除 block/blk-mq.c 中的 test_task_ux 重复导出"
+            echo "::warning title=Workaround::OnePlus sm8650 Android16 源码重复导出 test_task_ux，已自动移除（见 Numbersf/Action-Build#303）。一加修复后可删除本步骤。"
+          else
+            echo "源码中没有该导出，无需处理（一加可能已修复）"
+          fi
+          left=$(grep -c '^EXPORT_SYMBOL_GPL(test_task_ux);' block/blk-mq.c || true)
+          if [ "$left" != "0" ]; then
+            echo "::error title=Workaround Failed::test_task_ux 导出移除失败"
+            exit 1
+          fi
+          grep -n 'test_task_ux' block/blk-mq.c || true
+
       - name: Kernel Version Handling
         run: |
           cd kernel_workspace/kernel_platform
